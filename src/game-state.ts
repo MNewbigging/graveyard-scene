@@ -48,11 +48,11 @@ export class GameState {
     const directLight = new THREE.DirectionalLight();
     this.scene.add(directLight);
 
-    // Add box
-    const box = this.gameLoader.modelLoader.get("box");
-    if (box) {
-      addGui(box, "box");
-      this.scene.add(box);
+    // Add scene object
+    const graveyard = this.gameLoader.modelLoader.get("graveyard");
+    if (graveyard) {
+      graveyard.rotateY(Math.PI / 2);
+      this.scene.add(graveyard);
     }
 
     // Start game
