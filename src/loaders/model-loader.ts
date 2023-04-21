@@ -41,14 +41,14 @@ export class ModelLoader {
     const boxUrl = new URL("/graveyardScene.glb", import.meta.url).href;
     gltfLoader.load(boxUrl, (gltf) => {
       // Traverse the gltf scene
-      // gltf.scene.traverse((child) => {
-      //   const node = child as THREE.Mesh;
-      //   if (node.isMesh) {
-      //     // Kenney assets need their metalness reducing to render correctly
-      //     const mat = node.material as THREE.MeshStandardMaterial;
-      //     mat.metalness = 0;
-      //   }
-      // });
+      gltf.scene.traverse((child) => {
+        const node = child as THREE.Mesh;
+        if (node.isMesh) {
+          // I could have arrays of meshes I want to cast/receive instead of doing all...
+          node.castShadow = true;
+          node.receiveShadow = true;
+        }
+      });
 
       this.models.set("graveyard", gltf.scene);
     });
