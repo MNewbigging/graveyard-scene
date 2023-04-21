@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 import { GameLoader } from "./loaders/game-loader";
@@ -22,8 +21,7 @@ export class GameState {
       0.1,
       100
     );
-    this.camera.position.z = 1.6;
-    this.camera.position.y = 1.2;
+    this.camera.position.set(0, 3, 5);
 
     // Setup renderer
     this.renderer = new THREE.WebGLRenderer({ canvas });
@@ -33,13 +31,13 @@ export class GameState {
     this.renderer.toneMapping = THREE.LinearToneMapping;
     this.renderer.toneMappingExposure = 1;
     this.renderer.shadowMap.enabled = true;
+    this.renderer.setClearColor("#262837");
     window.addEventListener("resize", this.onCanvasResize);
     this.onCanvasResize();
 
-    this.scene.background = new THREE.Color("#1680AF");
-
     this.controls = new OrbitControls(this.camera, canvas);
     this.controls.enableDamping = true;
+    this.controls.target.set(0, 4, 0);
 
     // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
@@ -47,6 +45,9 @@ export class GameState {
 
     const directLight = new THREE.DirectionalLight();
     this.scene.add(directLight);
+
+    // Fog
+    this.scene.fog = new THREE.Fog("#262837", 1, 15);
 
     // Add scene object
     const graveyard = this.gameLoader.modelLoader.get("graveyard");
