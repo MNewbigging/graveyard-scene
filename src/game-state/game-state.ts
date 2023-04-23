@@ -81,7 +81,7 @@ export class GameState {
 
     const lid = graveyard?.getObjectByName("lid");
     if (lid) {
-      //lid.position.x += 1.6;
+      addGui(lid);
     }
 
     // Start game
