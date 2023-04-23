@@ -56,7 +56,7 @@ export class GameState {
     this.cryptSconceLights();
 
     // Fog
-    this.scene.fog = new THREE.Fog("#262837", 1, 15);
+    //this.scene.fog = new THREE.Fog("#262837", 1, 15);
 
     // Add scene object
     const graveyard = this.gameLoader.modelLoader.get("graveyard");
@@ -70,8 +70,24 @@ export class GameState {
   }
 
   private cryptSconceLights() {
+    // Setup objects
+    const flame = this.gameLoader.modelLoader.get("flame");
+    if (!flame) {
+      return;
+    }
+
+    const flameLeft = flame.clone();
+    flameLeft.position.set(-0.733, 3.32, -0.48);
+    this.scene.add(flameLeft);
+
+    const flameRight = flame.clone();
+    flameRight.position.set(0.74, 3.32, -0.48);
+    this.scene.add(flameRight);
+
     // Setup lights
     const sconceLeftLight = new THREE.PointLight("#ff8d00");
+    sconceLeftLight.decay = 6;
+    sconceLeftLight.distance = 20;
     sconceLeftLight.castShadow = true;
     sconceLeftLight.shadow.bias = -0.005;
     sconceLeftLight.shadow.camera.far = 5;
@@ -79,6 +95,8 @@ export class GameState {
     this.scene.add(sconceLeftLight);
 
     const sconceRightLight = new THREE.PointLight("#ff8d00");
+    sconceRightLight.decay = 6;
+    sconceRightLight.distance = 20;
     sconceRightLight.castShadow = true;
     sconceRightLight.shadow.bias = -0.005;
     sconceRightLight.shadow.camera.far = 5;
@@ -86,23 +104,8 @@ export class GameState {
     this.scene.add(sconceRightLight);
 
     // Setup animations
-    const graveyard = this.gameLoader.modelLoader.get("graveyard");
-    if (!graveyard) {
-      return;
-    }
-
-    const sconceLeftFlame = graveyard.getObjectByName(
-      "SM_Prop_Candle_Flame_01"
-    );
-    if (sconceLeftFlame) {
-      console.log("flame", sconceLeftFlame);
-
-      sconceLeftFlame.scale.y = 20;
-
-      this.flameAnimations.push(
-        new FlameAnimation(sconceLeftFlame, sconceLeftLight)
-      );
-    }
+    this.flameAnimations.push(new FlameAnimation(flameLeft, sconceLeftLight));
+    this.flameAnimations.push(new FlameAnimation(flameRight, sconceRightLight));
   }
 
   private onCanvasResize = () => {

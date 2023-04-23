@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 export class ModelLoader {
@@ -36,10 +37,11 @@ export class ModelLoader {
   }
 
   private loadModels() {
+    // GLTF Files
     const gltfLoader = new GLTFLoader(this.loadingManager);
 
-    const boxUrl = new URL("/graveyardScene.glb", import.meta.url).href;
-    gltfLoader.load(boxUrl, (gltf) => {
+    const sceneUrl = new URL("/graveyardScene.glb", import.meta.url).href;
+    gltfLoader.load(sceneUrl, (gltf) => {
       // Traverse the gltf scene
       gltf.scene.traverse((child) => {
         const node = child as THREE.Mesh;
@@ -51,6 +53,25 @@ export class ModelLoader {
       });
 
       this.models.set("graveyard", gltf.scene);
+    });
+
+    // FBX Files
+    const fbxLoader = new FBXLoader(this.loadingManager);
+    const flameMaterial = new THREE.MeshStandardMaterial({
+      color: "#FDD6A3",
+      emissive: "#FFFF19",
+    });
+    const flameUrl = new URL("/flame.fbx", import.meta.url).href;
+    fbxLoader.load(flameUrl, (object) => {
+      object.traverse((child) => {
+        const node = child as THREE.Mesh;
+        if (node.isMesh) {
+          // Setup the flame material
+          node.material = flameMaterial;
+        }
+      });
+
+      this.models.set("flame", object);
     });
   }
 }
