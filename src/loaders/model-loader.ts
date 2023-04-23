@@ -50,6 +50,14 @@ export class ModelLoader {
           node.castShadow = true;
           node.receiveShadow = true;
         }
+
+        if (node.material) {
+          const mat = node.material as THREE.MeshStandardMaterial;
+          mat.metalness = 0;
+          mat.roughness = 0.8;
+        }
+
+        // End traverse
       });
 
       this.models.set("graveyard", gltf.scene);

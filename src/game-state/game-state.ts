@@ -2,9 +2,12 @@ import * as THREE from "three";
 import GUI from "lil-gui";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-import { FlameAnimation } from "./prop-states/flame-animation";
-import { GameLoader } from "./loaders/game-loader";
-import { addGui } from "./utils/utils";
+import { CoffinLidAnimation } from "../prop-states/coffin-lid-animation";
+import { FlameAnimation } from "../prop-states/flame-animation";
+import { GameLoader } from "../loaders/game-loader";
+import { Intersecter } from "./intersecter";
+import { MouseListener } from "../listeners/mouse-listener";
+import { addGui } from "../utils/utils";
 
 export class GameState {
   private scene = new THREE.Scene();
@@ -13,8 +16,12 @@ export class GameState {
   private controls: OrbitControls;
   private clock = new THREE.Clock();
 
+  private mouseListener = new MouseListener();
+  private intersecter: Intersecter;
+
   private gui = new GUI();
   private flameAnimations: FlameAnimation[] = [];
+  private coffingLidAnimation = new CoffinLidAnimation();
 
   constructor(
     private canvas: HTMLCanvasElement,
@@ -42,6 +49,13 @@ export class GameState {
     window.addEventListener("resize", this.onCanvasResize);
     this.onCanvasResize();
 
+    this.intersecter = new Intersecter(
+      this.mouseListener,
+      this.camera,
+      this.scene
+    );
+
+    // Camera Controls
     this.controls = new OrbitControls(this.camera, canvas);
     this.controls.enableDamping = true;
     this.controls.target.set(0, 3, -2);
@@ -63,6 +77,11 @@ export class GameState {
     if (graveyard) {
       graveyard.rotateY(Math.PI / 2);
       this.scene.add(graveyard);
+    }
+
+    const lid = graveyard?.getObjectByName("lid");
+    if (lid) {
+      //lid.position.x += 1.6;
     }
 
     // Start game
